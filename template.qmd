@@ -1,0 +1,107 @@
+---
+title: "Project 02: YOUR_TITLE_HERE"
+author: "YOUR_NAME_HERE (netID)"
+jupyter: julia-1.9
+date: 2023-11-17 # FIX THIS
+
+number-sections: true
+code-annotations: hover
+
+kind: "Lab"
+Module: "3"
+categories:
+    - "Module 3"
+    - "Labs"
+
+format:
+    html: 
+        toc-depth: 3
+        html-math-method: mathjax
+        include-in-header: mathjax-config.html
+    docx: 
+        toc: true
+        toc-depth: 3
+        fig-format: png
+---
+
+```{julia}
+using DynamicHMC
+using Plots
+using Turing
+```
+
+## Problem Statement
+
+You have been contracted by the Texas Department of Transportation to inform the design of new roads and bridges. 
+They have asked you to provide them with a report describing the probability of extreme precipitation events in Texas.
+Specifically, they have asked you to pilot a methodology for estimating the probability distribution of annual maximum precipitation at the one-hour duration.
+
+You may pilot your approach at any station in Texas that you choose.
+
+## Grading
+
+This project is worth 100 points.
+Your grade will be based on the following:
+
+1. Code (30 points)
+    1. Legibility (10 points): is your code easy to follow? Are variable names, spacing, etc. easy to follow?
+    1. Correctness (20 points): does your code do what you say it does?
+    1. Markdown (10 points): do you use bold/italics, sections, LaTeX math, etc. appropriately?
+1. Analysis and methodology (70 points)
+    1. Data exploration (10 points): do you use plots and/or summary statistics to learn about the data?
+    1. Statistical modeling (0 points): do you correctly define a probabilistic model in Turing? Do you defend your priors? *If you want to check your accuracy, you can reimplement one of the models from `Extremes.jl` in Turing and compare your results.*
+    1. Stationarity (15 points): do you model the data as stationary? If nonstationary, how do you model nonstationarity? There are many possible right answers here -- you will be graded on the extent to which you communicate a clear and compelling argument for your choice.
+    1. Regionalization (15 points): do you use regionalization to estimate the distribution of annual maximum precipitation? If so, how do you choose the regions? If not, how do you justify not using regionalization? There are many possible right answers here -- you will be graded on the extent to which you communicate a clear and compelling argument for your choice.
+    1. Model selection (10 points): do you compare multiple models and thoughtfully discuss pros and cons of each?
+    1. Model communication (10 points): do you generate a clear description of your final model, plot return periods, show and discuss uncertainty, etc.?
+
+You will be graded on your GitHub repository and on a PDF or docx report that you will submit to Canvas.
+That should be generated in Quarto from your report (e.g., using this template).
+
+
+## Raw Data
+
+The raw data we are working with in this project is annual maximum hourly precipitation in Texas at over 300 stations.
+See the [README](data/README.md) for more information.
+This data was collected as part of NOAA's Atlas 14, which means it underwent extensive quality control.
+
+We can read in all the data as follows:
+
+```{julia}
+#| output: false
+include("read_data.jl")
+fname = joinpath("data", "dur01h_ams_na14v11.txt")
+stations, ann_max = parse_file(fname)
+```
+
+We can see that there are two DataFrames.
+The first contains information about each station:
+
+```{julia}
+display(size(stations))
+first(stations, 4)
+```
+
+The second contains the annual maximum precipitation for each station:
+
+```{julia}
+ann_max[rand(1:nrow(ann_max), 4), :]
+```
+
+The annual maximum observations contain a stnid column, so you can use this to link the two dataframes together.
+
+## Subset
+
+You may want to subset your data
+
+## Data Exploration
+
+This is left open-ended for you
+
+## Model building
+
+The rest is for you.
+
+## Discussion
+
+## Conclusions
