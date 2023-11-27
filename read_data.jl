@@ -45,8 +45,7 @@ function parse_data(line::AbstractString)
     return Observation(year, date, value)
 end
 
-function read_record(record_str::AbstractString)
-    lines = split(record_str, "\n")
+function read_record(lines::Vector{<:AbstractString})
 
     # Parse metadata
     stnid, name, state, lat, lon = parse_metadata(lines[1])
@@ -57,12 +56,37 @@ function read_record(record_str::AbstractString)
     return SingleDurationAnnMaxRecord(stnid, name, state, lon, lat, observations)
 end
 
+function group_lines(lines)
+    groups = []  # List to store all groups
+    current_group = []  # Current group of lines
+
+    for line in lines
+        if isempty(line)
+            # When an empty line is encountered, store the current group (if it's not empty) and reset it
+            if !isempty(current_group)
+                push!(groups, current_group)
+                current_group = []
+            end
+        else
+            # Add non-empty lines to the current group
+            push!(current_group, line)
+        end
+    end
+
+    # Add the last group if it's not empty
+    if !isempty(current_group)
+        push!(groups, current_group)
+    end
+
+    return groups
+end
+
 function read_all_records(filename::String)
     # Read the entire file into memory
-    content = read(filename, String)
+    all_lines = readlines(filename)
 
     # Split the content into individual records using a regular expression
-    record_strs = split(content, r"\n{2,}")
+    record_strs = split(all_lines, "")
     record_strs = [s for s in record_strs[2:end] if !isempty(s)]
 
     # Skip the first line and process each record, filtering out empty records
